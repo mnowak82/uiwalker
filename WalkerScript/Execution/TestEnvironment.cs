@@ -104,14 +104,18 @@ namespace WalkerScript.Execution
                 if (ret != null && set != null)
                     _variables[set] = ret;
 
-                var screenShot = _driver.TakeScreenshot();
-                var path = Path.Combine(Environment.CurrentDirectory, string.Format("passed_{1:yyyy-MM-dd_HH.mm.ss}_{0}.png", _testName, DateTime.Now));
-                screenShot.SaveAsFile(path, ScreenshotImageFormat.Png);
+                string v;
+                if (_variables.TryGetValue("debug", out v) && (v != null && v != "0" && v.ToLower() != "false" && v != "" && v.ToLower() != "nie"))
+                {
+                    var screenShot = _driver.TakeScreenshot();
+                    var path = Path.Combine(Environment.CurrentDirectory, string.Format("step_{1:yyyy-MM-dd_HH.mm.ss.fff}_{0}_{2}.png", _testName, DateTime.Now, opId));
+                    screenShot.SaveAsFile(path, ScreenshotImageFormat.Png);
+                }
             }
             catch (Exception)
             {
                 var screenShot = _driver.TakeScreenshot();
-                var path = Path.Combine(Environment.CurrentDirectory, string.Format("failed_{1:yyyy-MM-dd_HH.mm.ss}_{0}.png", _testName, DateTime.Now));
+                var path = Path.Combine(Environment.CurrentDirectory, string.Format("failed_{1:yyyy-MM-dd_HH.mm.ss}_{0}_{2}.png", _testName, DateTime.Now, opId));
                 screenShot.SaveAsFile(path, ScreenshotImageFormat.Png);
                 throw;
             }

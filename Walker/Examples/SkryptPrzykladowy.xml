@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Tests url="http://twoja.aplikacja.com/app">
-    <Test name="Tworzenie nowego zgłoszenia">
+<Tests url="http://dev/app">
+    <Test name="Tworzenie nowego zgłoszenia (portal)">
+        <BaseUrl url="http://dev/app_portal" />
+        <BrowserSize width="1280" height="800" />
         <Login userName="administrator" password="a" />
+        <Var value="1" set="debug" />
         <ClickButton label="Nowe zgłoszenie" />
         <Set field="Usługa" value="Testowa" />
         <Set field="Tytuł" value="Zgłoszenie z ${datetimelong}..." />
@@ -24,7 +27,7 @@
     <Test name="Tworzenie nowego zgłoszenia">
         <Login userName="administrator" password="a" />
         <SelectMenu menu="Utwórz.../Zgłoszenie" />
-        <Set field="Użytkownik" value="iw.zab" />
+        <Set field="Użytkownik" value="iwona.zab" />
         <Set field="Tytuł" value="Zgłoszenie z ${datetimelong}..." />
         <Set field="Usługa" value="CCiGK" />
         <Set field="#Description" value="To jest opis zgłoszenia" />

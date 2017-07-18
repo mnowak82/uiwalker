@@ -34,6 +34,41 @@ namespace Walker
 
         private string ScriptFile { get; set; }
 
+        static bool ExecuteTest(Test test)
+        {
+            try
+            {
+                Console.ForegroundColor = defColor;
+                Console.Write("Executing test '{0}'... ", test.Name);
+                Console.ForegroundColor = ConsoleColor.Gray;
+                test.Execute();
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine(" PASSED");
+                Console.ForegroundColor = defColor;
+                return true;
+            }
+            catch (BusinessApplicationWalkerException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(" FAILED: ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("{0}", e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(" FAILED: ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("{0}", e);
+                
+            }
+            Console.ForegroundColor = defColor;
+            return false;
+        }
+
+
+        static ConsoleColor defColor = Console.ForegroundColor;
+
         static void Main(string[] args)
         {
             if (args.Length == 0 || new[] {"/?", "/help", "--help", "-h"}.Contains(args[0]))
@@ -55,7 +90,7 @@ namespace Walker
                 ok = test.Validate() && ok;
             }
 
-            var defColor = Console.ForegroundColor;
+            
 
             if (!ok)
             {
@@ -70,7 +105,8 @@ namespace Walker
                 var toExecute = s.Tests.FirstOrDefault(t => t.Name == p.SelectedTest);
                 if (toExecute == null)
                     throw new ArgumentException(string.Format("Test '{0}' not found in tests in file '{1}", p.SelectedTest, p.ScriptFile), "-t");
-                toExecute.Execute();
+
+                ExecuteTest(toExecute);
                 return;
             }
 
@@ -79,33 +115,11 @@ namespace Walker
             var failed = 0;
             foreach (var test in s.Tests)
             {
-                try
-                {
-                    Console.ForegroundColor = defColor;
-                    Console.Write("Executing test '{0}'... ", test.Name);
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    test.Execute();
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.WriteLine(" PASSED");
+                if (ExecuteTest(test))
                     ++passed;
-                }
-                catch (BusinessApplicationWalkerException e)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(" FAILED: ");
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("{0}", e.Message);
+                else
                     ++failed;
-                }
-                catch (Exception e)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(" FAILED: ");
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("{0}", e);
-                    ++failed;
-                }
-                Console.ForegroundColor = defColor;
+
             }
 
             Console.ForegroundColor = failed > 0 ? ConsoleColor.Red : ConsoleColor.Green;
@@ -156,12 +170,14 @@ namespace Walker
             Console.WriteLine("Zmienne:");
             Console.WriteLine("W skrypcie istnieje możliwość odwołania się do zmiennych, za pomocą nawiasów klamrowych ${...}");
             Console.WriteLine("Dostępne są zmienne zdefiniowane w parametrach, ustawione w trakcie wykonania skryptu i globalne:");
-            Console.WriteLine("\t${{now}}\t\t- zwraca bieżącą godzinę, w formacie {0:HH:mm:ss}", DateTime.Now);
+            Console.WriteLine("\t${{now}}\t\t- zwraca bieżącą godzinę, w formacie {0:HH.mm.ss}", DateTime.Now);
             Console.WriteLine("\t${{nowlong}}\t- zwraca bieżącą datę w formacie {0:F}", DateTime.Now);
             Console.WriteLine("\t${{time}}\t\t- zwraca godzinę uruchomienia skryptu, w formacie {0:HH.mm.ss}", DateTime.Now);
             Console.WriteLine("\t${{date}}\t\t- zwraca godzinę uruchomienia skryptu, w formacie {0:yyyy.MM.dd}", DateTime.Now);
             Console.WriteLine("\t${{datetimelong}}\t- zwraca godzinę uruchomienia skryptu, w formacie {0:F}", DateTime.Now);
+            Console.WriteLine("\t${{debug}}\t- gdy ustawiona (ma wartość różną od pustej, '0', 'Nie') - zapisuje każdy krok skryptu w postaci obrazka");
             Console.WriteLine("Zmienną można ustawić w trakcie wykonania skryptu, poprzez dodanie atrybutu ... set=\"nazwa_zmiennej\" ...");
+            Console.WriteLine("Szczególne jest polecenie <Var value=\"wartość\" set=\"nazwa_zmiennej\" /> ustawiające wartość zmiennej.");
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("Przykładowy skrypt:");
