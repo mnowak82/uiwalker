@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Tests url="http://twoja.aplikacja.com/app">
+    <Test name="Tworzenie nowego zgłoszenia">
+        <Login userName="administrator" password="a" />
+        <ClickButton label="Nowe zgłoszenie" />
+        <Set field="Usługa" value="Testowa" />
+        <Set field="Tytuł" value="Zgłoszenie z ${datetimelong}..." />
+        <Set field="Rodzaj zgłoszenia" value="Incydent" />
+        <Set field="Opis" value="To jest opis zgłoszenia" />
+        <Set field="v" value="tak" />
+        <ClickButton label="Wyślij" />
+    </Test>
+    
+    <Test name="Logowanie do aplikacji">
+        <Login userName="administrator" password="a" />
+    </Test>
+
+    <Test name="Przejście do formularza szczegółów zgłoszenia">
+        <Login userName="administrator" password="a" />
+        <NavigateList className="Incident" />
+        <ClickList list="#theList" column="Id" />
+    </Test>
+
+    <Test name="Tworzenie nowego zgłoszenia">
+        <Login userName="administrator" password="a" />
+        <SelectMenu menu="Utwórz.../Zgłoszenie" />
+        <Set field="Użytkownik" value="iw.zab" />
+        <Set field="Tytuł" value="Zgłoszenie z ${datetimelong}..." />
+        <Set field="Usługa" value="CCiGK" />
+        <Set field="#Description" value="To jest opis zgłoszenia" />
+        <ClickButton label="Rozwiązanie zgłoszenia" />
+        <Set field="Kod rozwiązania" value="Rozwiązane" />
+        <Set field="#closeComment" value="Jest ok" />
+        <ClickButton label="Zatwierdź" />
+    </Test>
+</Tests>

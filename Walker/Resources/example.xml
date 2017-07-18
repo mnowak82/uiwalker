@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Tests url="http://application_url/">
+    <Test name="Utworzenie obiektu">
+        <Login userName="administrator" password="abc" />
+        <NavigateDetails className="Incident" />
+        <!-- ... -->
+        <Assert value="abc" eq="abc" />
+    </Test>
+    
+    <Test name="Logowanie do aplikacji">
+        <Login userName="administrator" password="abc" />
+    </Test>
+</Tests>
