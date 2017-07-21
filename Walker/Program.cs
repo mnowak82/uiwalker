@@ -34,6 +34,8 @@ namespace Walker
 
         private string ScriptFile { get; set; }
 
+        private static string Driver { get; set; }
+
         static bool ExecuteTest(Test test)
         {
             try
@@ -41,7 +43,7 @@ namespace Walker
                 Console.ForegroundColor = defColor;
                 Console.Write("Executing test '{0}'... ", test.Name);
                 Console.ForegroundColor = ConsoleColor.Gray;
-                test.Execute();
+                test.Execute(Driver);
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine(" PASSED");
                 Console.ForegroundColor = defColor;
@@ -151,6 +153,12 @@ namespace Walker
                         SelectedTest = args[i + 1];
                         i += 1;
                         break;
+                    case "-d":
+                        if (i + 1 >= args.Length)
+                            throw new InvalidOperationException(string.Format("Unknown argument '{0}'", v));
+                        Driver = args[i + 1];
+                        i += 1;
+                        break;
                     default:
                         throw new InvalidOperationException(string.Format("Unknown argument '{0}'", v));
                 }
@@ -159,11 +167,12 @@ namespace Walker
 
         static void PrintHelp()
         {
-            Console.WriteLine("{0} <skrypt> [-t <nazwa_testu>] [-p <param1> <value1> [-p <param2> <value2> [...]]]", System.AppDomain.CurrentDomain.FriendlyName);
+            Console.WriteLine("{0} <skrypt> [-d <nazwa_przegladarki>] [-t <nazwa_testu>] [-p <param1> <value1> [-p <param2> <value2> [...]]]", System.AppDomain.CurrentDomain.FriendlyName);
             Console.WriteLine(" - program do uruchamiania skryptów dla aplikacji biznesowych");
             Console.WriteLine();
             Console.WriteLine("Parametry:");
             Console.WriteLine("\t<skrypt>\r- plik xml sterujący przebiegiem testów");
+            Console.WriteLine("\t-d <nazwa_przegladarki>\r- wskazuje, która przeglądarka zostanie użyta w testach, wartości: chrome, ff, ie (domyślnie chrome)");
             Console.WriteLine("\t-t <nazwa_testu>\r- wskazuje, który test ma być wykonany");
             Console.WriteLine("\t-p <param1> <value1> [-p <paramN> <valueN> [...]]- pary (nazwa, wartość) przekazywane do skryptu");
             Console.WriteLine();

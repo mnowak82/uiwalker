@@ -1,4 +1,8 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.IE;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -6,8 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using WalkerInterfaces;
 using WalkerScript.Exceptions;
 using WalkerScript.Operations;
@@ -42,8 +44,21 @@ namespace WalkerScript
             }
         }
 
-        public IWebDriver CreateDriver()
+        public IWebDriver CreateDriver(string driver)
         {
+            if (!String.IsNullOrEmpty(driver))
+            {
+                if (String.Compare(driver, "chrome", true) == 0)
+                    return new ChromeDriver();
+                if (String.Compare(driver, "ff", true) == 0)
+                {
+                    FirefoxProfile profile = new FirefoxProfile();
+                    profile.SetPreference("network.automatic-ntlm-auth.trusted-uris", BaseUrl);
+                    return new FirefoxDriver(profile);
+                }
+                if (String.Compare(driver, "ie", true) == 0)
+                    return new InternetExplorerDriver();
+            }
             return new ChromeDriver();
         }
 

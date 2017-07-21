@@ -46,9 +46,9 @@ namespace WalkerScript
             return noErrors;
         }
 
-        public void Execute()
+        public void Execute(string driverName)
         {
-            using (var driver = _script.CreateDriver())
+            using (var driver = _script.CreateDriver(driverName))
             {
                 var execution = new TestEnvironment(Name, _globalVariables, driver, _script.CreateOperations);
                 
